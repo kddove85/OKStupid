@@ -18,13 +18,16 @@ Aug 03 2014    Kyle Dove            Developed technique to pull question from pa
                                     regex
 Aug 03 2014    Greg Saxton          Developed better technique to pull question from page source
                                     using CSS Selector
+Aug 03 2014    Kyle Dove            Code clean up
+Aug 03 2014    Kyle Dove            Added for loop navigating to answers and printing them. It's
+                                    using xpath, which is apparently frowned upon in this
+                                    establishment, and may or may not work moving forward
 '''
 
 from selenium import webdriver
 import time
-import re
 
-
+#For Chrome use
 #chromeDriverPath = "C:/ChromeBinary/chromedriver.exe"
 #driver = webdriver.Chrome(chromeDriverPath)
 
@@ -33,21 +36,7 @@ fileIN = open('creds', "r")
 line = fileIN.readline()
 
 qtxt = "qtext_"
-
-#Working... kind of...
-#Don't fucking touch this...
-#regex = '<div class="qtext" id="qtext_(.*)>\s<p>(.+?)<\/p>\s<\/div>'
-#pattern = re.compile(regex)
-
-#Working... kind of...
-#Don't fucking touch this...
-#regex = '<div class="qtext" id="qtext_(.*)>\s<p>(.+?)<\/p>\s<\/div>'
-#pattern = re.compile(regex)
-
-#Working... kind of...
-#Don't fucking touch this...
-regex = '<div class="qtext" id="qtext_(.*.)>\s<p>(.+?)<\/p>\s<\/div>'
-pattern = re.compile(regex)
+atxt = "my_answer_"
 
 while line:
     sout=line.split(separator)
@@ -77,46 +66,30 @@ PasswordElement.send_keys(passwd)
 #Click sign in button / submit form
 driver.find_element_by_id("sign_in_button").click()
 
-#Print Source Page
+#Print Source Page for testing purposes
 print(driver.page_source)
-
 print('\n \n \n New Page \n \n \n')
 
-print(driver.page_source)
-
-print('\n \n \n New Page \n \n \n')
-
-time.sleep(10)
-
-#Fucking Please!!! Why Mega Man X is so fucking good that it makes my dick rock hard
-#Click the link to questions
-#driver.find_element_by_xpath("//div[@id='main_content']/div[2]/div[1]/ul[1]/li[3]/a").click()
+time.sleep(5)
 
 #Greg's way of clicking the link
 driver.find_element_by_css_selector("#pane_new > div.links > ul > li > a").click()
 
 time.sleep(10)
 
-#Ridin' on Cars!!!
-#Click the accept button on the modal to advance to the questions page
-#driver.find_element_by_xpath("//div[@id='questions_intro']/a[1]").click()
-
 #Greg's way of clicking the link
 driver.find_element_by_css_selector("#questions_intro > div.buttons > ul > li > button").click()
-
-print(driver.find_element_by_xpath("//div[@id='new_question']"))
-
-print driver.page_source
-
-question = re.search(pattern,driver.page_source)
-print(question)
-
-question = re.findall(pattern,driver.page_source)
-print(question)
 
 #Greg's way of getting question and printing it
 question = driver.find_element_by_css_selector("div[id^="+qtxt+"]").text
 print(question)
+
+#Have no fear Simon Belmont is here with the power of Christ infused in my spear
+#For loop for navigating and printing answers
+for x in range(1, 3):
+    x2 = str(x)
+    answer = driver.find_element_by_xpath("/html/body/div[4]/div/div[2]/div[2]/div[4]/div[2]/div[2]/div[2]/div[1]/div/div[1]/div[3]/form/div[1]/label[" + x2 + "]").text
+    print(answer)
 
 #Close Down
 #driver.close()
