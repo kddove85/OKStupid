@@ -1,6 +1,4 @@
 '''
-Created on Jul 28, 2014
-
 @author: Greg Saxton
 @author: Kyle Dove
 
@@ -15,17 +13,20 @@ Jul 29 2014    Kyle Dove            Removed credentials from hardcode and placed
                                     Added logic to advance to the questions page (past the modal 
                                     and past the questions link, to grandmother's house we go)
 Aug 03 2014    Kyle Dove            Developed technique to pull question from page source using
-                                    regex
+                                    regex.
 Aug 03 2014    Greg Saxton          Developed better technique to pull question from page source
-                                    using CSS Selector
-Aug 03 2014    Kyle Dove            Code clean up
+                                    using CSS Selector.
+Aug 03 2014    Kyle Dove            Code clean up.
 Aug 03 2014    Kyle Dove            Added for loop navigating to answers and printing them. It's
                                     using xpath, which is apparently frowned upon in this
-                                    establishment, and may or may not work moving forward
+                                    establishment, and may or may not work moving forward.
+Aug 10 2014    Kyle Dove            Added Question class so code is easier to maintain.
 '''
 
 from selenium import webdriver
 import time
+from question import Question
+
 
 #For Chrome use
 #chromeDriverPath = "C:/ChromeBinary/chromedriver.exe"
@@ -67,8 +68,8 @@ PasswordElement.send_keys(passwd)
 driver.find_element_by_id("sign_in_button").click()
 
 #Print Source Page for testing purposes
-print(driver.page_source)
-print('\n \n \n New Page \n \n \n')
+#print(driver.page_source)
+#print('\n \n \n New Page \n \n \n')
 
 time.sleep(5)
 
@@ -80,16 +81,23 @@ time.sleep(10)
 #Greg's way of clicking the link
 driver.find_element_by_css_selector("#questions_intro > div.buttons > ul > li > button").click()
 
-#Greg's way of getting question and printing it
+#Greg's way of getting question
 question = driver.find_element_by_css_selector("div[id^="+qtxt+"]").text
-print(question)
+
+#Verify by printing
+#print(question)
+
+myQuestion = Question(question)
 
 #Have no fear Simon Belmont is here with the power of Christ infused in my spear
 #For loop for navigating and printing answers
 for x in range(1, 3):
     x2 = str(x)
     answer = driver.find_element_by_xpath("/html/body/div[4]/div/div[2]/div[2]/div[4]/div[2]/div[2]/div[2]/div[1]/div/div[1]/div[3]/form/div[1]/label[" + x2 + "]").text
-    print(answer)
+    #Verify by printing
+    #print(answer)
+    myQuestion.addAnswer(answer)
 
+myQuestion.toString()
 #Close Down
 #driver.close()
